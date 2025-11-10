@@ -2,20 +2,27 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
+  <!-- 모바일 화면에 맞게 스케일 맞추기 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>비밀번호 보안 등급 측정기</title>
   <style>
     /* 전체 배경: 어두운 사이버 느낌 + 중앙 정렬 */
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: radial-gradient(circle at top, #1f2937, #020617);
       color: #f9fafb;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 40px 16px;
+      padding: 32px 16px;
       overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    *, *::before, *::after {
+      box-sizing: inherit;
     }
 
     /* 중앙 카드형 컨테이너 */
@@ -24,7 +31,7 @@
       max-width: 480px;
       background: rgba(15, 23, 42, 0.9);
       border-radius: 16px;
-      padding: 24px 20px 20px;
+      padding: 20px 16px 18px;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(10px);
       position: relative;
@@ -42,19 +49,19 @@
     .code-rain {
       position: absolute;
       font-family: monospace;
-      font-size: 14px;
+      font-size: 12px;
       color: rgba(148, 163, 184, 0.15);
       writing-mode: vertical-rl;
       animation: rain 8s linear infinite;
     }
 
     .code-rain-1 {
-      left: 10%;
+      left: 6%;
       top: -150px;
     }
 
     .code-rain-2 {
-      right: 15%;
+      right: 10%;
       top: -200px;
       animation-duration: 11s;
       animation-delay: -3s;
@@ -68,9 +75,9 @@
     /* 떠다니는 자물쇠 아이콘 */
     .floating-lock {
       position: fixed;
-      right: 24px;
-      top: 24px;
-      font-size: 32px;
+      right: 16px;
+      top: 16px;
+      font-size: 28px;
       opacity: 0.35;
       animation: float 3s ease-in-out infinite alternate;
       z-index: 2;
@@ -84,7 +91,7 @@
     /* 제목 + 깜빡이는 커서 */
     h2 {
       margin: 0 0 8px 0;
-      font-size: 22px;
+      font-size: 20px;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -100,13 +107,19 @@
       51%,100% { opacity: 0; }
     }
 
+    p {
+      margin: 0 0 4px 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
     .bar-wrapper {
       width: 100%;
       height: 20px;
       background: #020617;
       border-radius: 10px;
       overflow: hidden;
-      margin-top: 8px;
+      margin-top: 10px;
       box-shadow: 0 0 16px rgba(59, 130, 246, 0.45); /* 네온 느낌 */
     }
 
@@ -116,19 +129,40 @@
       transition: width 0.3s, background 0.3s, box-shadow 0.3s;
     }
 
-    .info { margin-top: 10px; font-weight: bold; }
+    .info { margin-top: 10px; font-weight: 600; font-size: 14px; }
     small { color: #9ca3af; }
     .pw-row { display: flex; gap: 8px; margin-top: 12px; }
     .pw-row input { flex: 1; }
 
-    .toggle-btn {
-      padding: 8px 10px;
+    input[type="password"],
+    input[type="text"] {
+      padding: 10px 12px;
+      border-radius: 8px;
       border: 1px solid #4b5563;
-      border-radius: 6px;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #6b7280;
+    }
+
+    input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.7);
+    }
+
+    .toggle-btn {
+      padding: 10px 12px;
+      border: 1px solid #4b5563;
+      border-radius: 8px;
       background: #111827;
       cursor: pointer;
       font-size: 12px;
       color: #e5e7eb;
+      white-space: nowrap;
     }
 
     .toggle-btn:hover {
@@ -166,7 +200,7 @@
 
     #detail {
       margin-top: 6px;
-      font-size: 13px;
+      font-size: 12px;
       color: #cbd5f5;
     }
 
@@ -176,6 +210,38 @@
       font-size: 11px;
       color: #6b7280;
       text-align: right;
+    }
+
+    /* 작은 화면(스마트폰) 전용 조정 */
+    @media (max-width: 480px) {
+      body {
+        padding: 24px 12px;
+      }
+      .container {
+        padding: 18px 14px 16px;
+        border-radius: 14px;
+      }
+      h2 {
+        font-size: 18px;
+      }
+      .floating-lock {
+        font-size: 24px;
+        right: 12px;
+        top: 12px;
+      }
+      .code-rain {
+        font-size: 10px;
+      }
+      .info {
+        font-size: 13px;
+      }
+      #detail {
+        font-size: 11px;
+      }
+      .toggle-btn {
+        padding: 8px 10px;
+        font-size: 11px;
+      }
     }
   </style>
 </head>
