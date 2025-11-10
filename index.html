@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>비밀번호 보안 등급 측정기</title>
+  <style>
+    /* 전체 배경: 어두운 사이버 느낌 + 중앙 정렬 */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: sans-serif;
+      background: radial-gradient(circle at top, #1f2937, #020617);
+      color: #f9fafb;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 16px;
+      overflow-x: hidden;
+    }
+
+    /* 중앙 카드형 컨테이너 */
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 16px;
+      padding: 24px 20px 28px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 배경 장식용 코드 비 */
+    .background-decor {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .code-rain {
+      position: absolute;
+      font-family: monospace;
+      font-size: 14px;
+      color: rgba(148, 163, 184, 0.15);
+      writing-mode: vertical-rl;
+      animation: rain 8s linear infinite;
+    }
+
+    .code-rain-1 {
+      left: 10%;
+      top: -150px;
+    }
+
+    .code-rain-2 {
+      right: 15%;
+      top: -200px;
+      animation-duration: 11s;
+      animation-delay: -3s;
+    }
+
+    @keyframes rain {
+      0%   { transform: translateY(-100px); }
+      100% { transform: translateY(120vh); }
+    }
+
+    /* 떠다니는 자물쇠 아이콘 */
+    .floating-lock {
+      position: fixed;
+      right: 24px;
+      top: 24px;
+      font-size: 32px;
+      opacity: 0.35;
+      animation: float 3s ease-in-out infinite alternate;
+      z-index: 2;
+    }
+
+    @keyframes float {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(8px); }
+    }
+
+    /* 제목 + 깜빡이는 커서 */
+    h2 {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cursor {
+      font-weight: 300;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 50%  { opacity: 1; }
+      51%,100% { opacity: 0; }
+    }
+
+    .bar-wrapper {
+      width: 100%;
+      height: 20px;
+      background: #020617;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.45); /* 네온 느낌 */
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s, background 0.3s, box-shadow 0.3s;
+    }
+
+    .info { margin-top: 10px; font-weight: bold; }
+    small { color: #9ca3af; }
+    .pw-row { display: flex; gap: 8px; margin-top: 12px; }
+    .pw-row input { flex: 1; }
+
+    .toggle-btn {
+      padding: 8px 10px;
+      border: 1px solid #4b5563;
+      border-radius: 6px;
+      background: #111827;
+      cursor: pointer;
+      font-size: 12px;
+      color: #e5e7eb;
+    }
+
+    .toggle-btn:hover {
+      background: #1f2937;
+    }
+
+    /* ★ 100점일 때 무지개 + 반짝임 효과 */
+    .bar.rainbow {
+      background: linear-gradient(
+        90deg,
+        #ff0000,
+        #ff7f00,
+        #ffff00,
+        #00ff00,
+        #00ffff,
+        #0000ff,
+        #8b00ff,
+        #ff0000,
+        #ff7f00,
+        #ffff00	
+      );
+      background-size: 400% 100%;
+      animation: rainbowMove 1s linear infinite, glow 1.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes rainbowMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    @keyframes glow {
+      0% { box-shadow: 0 0 4px rgba(59, 130, 246, 0.4); }
+      100% { box-shadow: 0 0 16px rgba(59, 130, 246, 0.9); }
+    }
+
+    #detail {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #cbd5f5;
+    }
+  </style>
+</head>
+<body>
+  <!-- 배경 장식 -->
+  <div class="background-decor">
+    <div class="code-rain code-rain-1">0101011010010110100101</div>
+    <div class="code-rain code-rain-2">1100100101011001010101</div>
+  </div>
+
+  <!-- 떠다니는 자물쇠 -->
+  <div class="floating-lock">🔒</div>
+
+  <!-- 메인 카드 -->
+  <div class="container">
+    <h2>비밀번호 보안도 측정기</h2>
+    <p>
+      <small>
+        ※ 실제 비밀번호 말고, 비슷한 <b>예시 비밀번호</b>를 넣어 보세요.<br>
+        ※ 이 도구는 <b>최대 12자</b>까지만 검사합니다.<br>
+      </small>
+    </p>
+
+    <div class="pw-row">
+      <input
+        id="pw"
+        type="password"
+        placeholder="예시 비밀번호 (최대 12자)"
+        maxlength="12"
+      />
+      <button type="button" id="togglePw" class="toggle-btn">보기</button>
+    </div>
+    
+    <div class="bar-wrapper">
+      <div id="bar" class="bar"></div>
+    </div>
+    <div id="scoreText" class="info"></div>
+    <div id="detail"></div>
+  </div>
+
+  <script>
+    const pwInput = document.getElementById('pw');
+    const bar = document.getElementById('bar');
+    const scoreText = document.getElementById('scoreText');
+    const detail = document.getElementById('detail');
+    const toggleBtn = document.getElementById('togglePw');
+
+    // 비밀번호 보기/숨기기 버튼
+    toggleBtn.addEventListener('click', () => {
+      if (pwInput.type === 'password') {
+        pwInput.type = 'text';
+        toggleBtn.textContent = '숨기기';
+      } else {
+        pwInput.type = 'password';
+        toggleBtn.textContent = '보기';
+      }
+    });
+
+    pwInput.addEventListener('input', () => {
+      const pw = pwInput.value;
+      const score = calcScore(pw);
+      updateUI(score, pw);
+    });
+
+    function calcScore(pw) {
+      if (!pw) return 0;
+      let score = 0;
+      const len = pw.length;
+
+      // 대문자/특수문자 개수 계산
+      const upperMatches = pw.match(/[A-Z]/g) || [];
+      const specialMatches = pw.match(/[^a-zA-Z0-9]/g) || [];
+      const upperCount = upperMatches.length;
+      const specialCount = specialMatches.length;
+
+      // 문자 종류 체크
+      let typeCount = 0;
+      if (/[a-z]/.test(pw)) typeCount++;
+      if (upperCount > 0) typeCount++;
+      if (/[0-9]/.test(pw)) typeCount++;
+      if (specialCount > 0) typeCount++;
+
+      // 1) 길이 점수 (최대 50점, 12자에서 풀스코어)
+      if (len >= 12) score += 50;
+      else if (len === 11) score += 40;
+      else if (len === 10) score += 35;
+      else if (len >= 8) score += 25;
+      else if (len >= 6) score += 10;
+      // 5자 이하는 0점
+
+      // 2) 문자 종류 점수 (최대 48점)
+      if (/[a-z]/.test(pw)) score += 12;
+      if (upperCount > 0) score += 12;
+      if (/[0-9]/.test(pw)) score += 12;
+      if (specialCount > 0) score += 12;
+
+      // 3) 기본 보너스 (난이도 조절용)
+      if (len >= 10 && typeCount >= 3) {
+        score += 5;
+      }
+
+      // 4) 위험 패턴 감점
+      const lower = pw.toLowerCase();
+      const commonPatterns = ["1234", "abcd", "qwerty", "password", "admin"];
+      for (const p of commonPatterns) {
+        if (lower.includes(p)) {
+          score -= 25;
+          break;
+        }
+      }
+
+      // 같은 문자 4번 이상 반복
+      if (/^(.)\1{3,}$/.test(pw)) {
+        score -= 15;
+      }
+
+      // 너무 짧은 비밀번호 추가 감점
+      if (len <= 6) {
+        score -= 10;
+      }
+
+      // 기본 점수 범위 제한
+      if (score < 0) score = 0;
+      if (score > 100) score = 100;
+
+      // ★ 100점 조건 강제 적용 ★
+      // 모든 글자 서로 달라야 함
+      const allUnique = new Set(pw).size === pw.length;
+
+      // 길이 12, 문자 종류 4가지, 대문자 2개 이상, 특수기호 2개 이상, 전부 다른 글자일 때만 100점 유지
+      const perfectCondition =
+        len === 12 &&
+        typeCount === 4 &&
+        upperCount >= 2 &&
+        specialCount >= 2 &&
+        allUnique;
+
+      if (score === 100 && !perfectCondition) {
+        // 조건을 충족하지 못하면 100점 대신 99점으로 제한
+        score = 99;
+      }
+
+      return Math.round(score);
+    }
+
+    function updateUI(score, pw) {
+      bar.style.width = score + "%";
+      bar.classList.remove("rainbow"); // 항상 먼저 무지개 효과 제거
+
+      let color = "#ef4444"; // 기본 빨간
+      let label = "위험";
+      let msg = "아주 약한 비밀번호입니다. 길이와 문자 종류를 늘려 보세요.";
+
+      if (score === 100) {
+        color = "#1d4ed8"; // (무지개가 덮어쓰지만 기본값은 유지)
+        label = "전설의 비밀번호";
+        msg = "최상급 비밀번호입니다! 여러 곳에 재사용만 하지 마세요!";
+      } else if (score > 80) {
+        color = "#3b82f6"; // 파랑
+        label = "매우 안전";
+        msg = "아주 잘 만들었습니다.";
+      } else if (score > 60) {
+        color = "#22c55e"; // 초록
+        label = "안전";
+        msg = "꽤 괜찮습니다.";
+      } else if (score > 30) {
+        color = "#f97316"; // 주황
+        label = "보통";
+        msg = "조금 더 길게 만들고, 대문자/숫자/특수문자를 골고루 섞어 보세요.";
+      }
+
+      // 100점일 때만 무지개 + 특수효과
+      if (score === 100) {
+        bar.style.background = "";      // 기존 단색 인라인 background 제거
+        bar.classList.add("rainbow");   // CSS 무지개 효과 적용
+      } else {
+        bar.style.background = color;   // 평소엔 단색
+        bar.style.boxShadow = "none";
+      }
+
+      scoreText.textContent = `보안도: ${score}% (${label})`;
+      detail.textContent = pw 
+        ? msg 
+        : "예시 비밀번호를 입력하면 보안도를 확인할 수 있어요. (최대 12자)";
+    }
+
+    // 초기 상태
+    updateUI(0, "");
+  </script>
+</body>
+</html>
