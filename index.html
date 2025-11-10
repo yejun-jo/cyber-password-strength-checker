@@ -24,7 +24,7 @@
       max-width: 480px;
       background: rgba(15, 23, 42, 0.9);
       border-radius: 16px;
-      padding: 24px 20px 28px;
+      padding: 24px 20px 20px;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(10px);
       position: relative;
@@ -169,6 +169,14 @@
       font-size: 13px;
       color: #cbd5f5;
     }
+
+    /* 크레딧 문구 */
+    .credit {
+      margin-top: 14px;
+      font-size: 11px;
+      color: #6b7280;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
@@ -183,7 +191,7 @@
 
   <!-- 메인 카드 -->
   <div class="container">
-    <h2>비밀번호 보안도 측정기</h2>
+    <h2>비밀번호 보안도 측정기<span class="cursor">|</span></h2>
     <p>
       <small>
         ※ 실제 비밀번호 말고, 비슷한 <b>예시 비밀번호</b>를 넣어 보세요.<br>
@@ -206,6 +214,8 @@
     </div>
     <div id="scoreText" class="info"></div>
     <div id="detail"></div>
+
+    <div class="credit">조예준이 만들었습니다</div>
   </div>
 
   <script>
@@ -256,7 +266,6 @@
       else if (len === 10) score += 35;
       else if (len >= 8) score += 25;
       else if (len >= 6) score += 10;
-      // 5자 이하는 0점
 
       // 2) 문자 종류 점수 (최대 48점)
       if (/[a-z]/.test(pw)) score += 12;
@@ -306,7 +315,6 @@
         allUnique;
 
       if (score === 100 && !perfectCondition) {
-        // 조건을 충족하지 못하면 100점 대신 99점으로 제한
         score = 99;
       }
 
@@ -315,36 +323,35 @@
 
     function updateUI(score, pw) {
       bar.style.width = score + "%";
-      bar.classList.remove("rainbow"); // 항상 먼저 무지개 효과 제거
+      bar.classList.remove("rainbow");
 
-      let color = "#ef4444"; // 기본 빨간
+      let color = "#ef4444";
       let label = "위험";
       let msg = "아주 약한 비밀번호입니다. 길이와 문자 종류를 늘려 보세요.";
 
       if (score === 100) {
-        color = "#1d4ed8"; // (무지개가 덮어쓰지만 기본값은 유지)
+        color = "#1d4ed8";
         label = "전설의 비밀번호";
         msg = "최상급 비밀번호입니다! 여러 곳에 재사용만 하지 마세요!";
       } else if (score > 80) {
-        color = "#3b82f6"; // 파랑
+        color = "#3b82f6";
         label = "매우 안전";
         msg = "아주 잘 만들었습니다.";
       } else if (score > 60) {
-        color = "#22c55e"; // 초록
+        color = "#22c55e";
         label = "안전";
         msg = "꽤 괜찮습니다.";
       } else if (score > 30) {
-        color = "#f97316"; // 주황
+        color = "#f97316";
         label = "보통";
         msg = "조금 더 길게 만들고, 대문자/숫자/특수문자를 골고루 섞어 보세요.";
       }
 
-      // 100점일 때만 무지개 + 특수효과
       if (score === 100) {
-        bar.style.background = "";      // 기존 단색 인라인 background 제거
-        bar.classList.add("rainbow");   // CSS 무지개 효과 적용
+        bar.style.background = "";
+        bar.classList.add("rainbow");
       } else {
-        bar.style.background = color;   // 평소엔 단색
+        bar.style.background = color;
         bar.style.boxShadow = "none";
       }
 
@@ -354,7 +361,6 @@
         : "예시 비밀번호를 입력하면 보안도를 확인할 수 있어요. (최대 12자)";
     }
 
-    // 초기 상태
     updateUI(0, "");
   </script>
 </body>
